@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle with gradient -->
+  <circle cx="60" cy="60" r="60" fill="url(#gradient)" />
+  
+  <!-- Gift box base -->
+  <rect x="35" y="45" width="50" height="45" rx="4" fill="white" />
+  
+  <!-- Gift box top -->
+  <rect x="35" y="30" width="50" height="15" rx="4" fill="white" />
+  
+  <!-- Ribbon vertical -->
+  <rect x="57" y="30" width="6" height="60" fill="#FF4B91" />
+  
+  <!-- Ribbon horizontal -->
+  <rect x="35" y="42" width="50" height="6" fill="#FF4B91" />
+  
+  <!-- Bow left -->
+  <path d="M60 25C60 25 55 20 50 22C45 24 45 30 50 32C55 34 60 30 60 30" fill="#FF4B91" />
+  
+  <!-- Bow right -->
+  <path d="M60 25C60 25 65 20 70 22C75 24 75 30 70 32C65 34 60 30 60 30" fill="#FF4B91" />
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" style="stop-color:#60A5FA" />
+      <stop offset="100%" style="stop-color:#FF4B91" />
+    </linearGradient>
+  </defs>
+</svg> 
