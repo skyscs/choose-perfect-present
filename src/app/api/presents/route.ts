@@ -23,14 +23,14 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, description, price, images } = body
+    const { name, description, price, image } = body
 
     const present = await prisma.present.create({
       data: {
         name,
         description,
         price,
-        images: Array.isArray(images) ? JSON.stringify(images) : images,
+        image,
         isReserved: false
       }
     })

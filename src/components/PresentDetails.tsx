@@ -90,28 +90,18 @@ export default function PresentDetails({ id }: PresentDetailsProps) {
         >
           <div className="block md:flex">
             <div className="w-full md:w-[600px] h-[600px] relative bg-gray-100">
-              {(() => {
-                let imagesArr: string[] = [];
-                try {
-                  imagesArr = typeof present.images === 'string' ? JSON.parse(present.images) : present.images;
-                } catch {
-                  imagesArr = [];
-                }
-                return (
-                  <Image
-                    src={imagesArr?.[0] || '/images/placeholder.webp'}
-                    alt={present.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 600px"
-                    priority
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.src = '/images/placeholder.webp';
-                    }}
-                  />
-                );
-              })()}
+              <Image
+                src={present.image || '/images/placeholder.webp'}
+                alt={present.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 600px"
+                priority
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.src = '/images/placeholder.webp';
+                }}
+              />
             </div>
             <div className="flex-1 p-6 md:p-8 flex flex-col">
               <div>

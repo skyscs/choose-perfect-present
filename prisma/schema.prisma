@@ -18,7 +18,7 @@ model Present {
   name        String
   description String
   price       Float
-  images      String   // Will store JSON string of image URLs
+  image       String   // Single image URL
   isReserved  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

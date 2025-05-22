@@ -10,7 +10,7 @@ interface Present {
   name: string
   description: string
   price: number
-  images: string[]
+  image: string
   isReserved: boolean
 }
 
@@ -18,7 +18,7 @@ interface PresentFormData {
   name: string
   description: string
   price: string
-  images: string[]
+  image: string
 }
 
 export default function AdminDashboard() {
@@ -27,12 +27,11 @@ export default function AdminDashboard() {
   const [error, setError] = useState('')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editingPresent, setEditingPresent] = useState<Present | null>(null)
-  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState<PresentFormData>({
     name: '',
     description: '',
     price: '',
-    images: []
+    image: ''
   })
 
   // Fetch presents
@@ -122,7 +121,7 @@ export default function AdminDashboard() {
       name: '',
       description: '',
       price: '',
-      images: []
+      image: ''
     })
   }
 
@@ -134,7 +133,7 @@ export default function AdminDashboard() {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        images: formData.images,
+        image: formData.image,
       })
     } else {
       addPresentMutation.mutate(formData)
@@ -147,7 +146,7 @@ export default function AdminDashboard() {
       name: present.name,
       description: present.description,
       price: present.price.toString(),
-      images: present.images,
+      image: present.image,
     })
   }
 
@@ -155,46 +154,6 @@ export default function AdminDashboard() {
     if (window.confirm('Are you sure you want to delete this present?')) {
       deletePresentMutation.mutate(id)
     }
-  }
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) return;
-    
-    setUploading(true)
-    setError('')
-    
-    try {
-      const file = e.target.files[0]
-      const formData = new FormData()
-      formData.append('file', file)
-      
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      })
-      
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to upload image')
-      }
-      
-      const { url } = await response.json()
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, url]
-      }))
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload image')
-    } finally {
-      setUploading(false)
-    }
-  }
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }))
   }
 
   if (isLoading) {
@@ -270,48 +229,16 @@ export default function AdminDashboard() {
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Images</label>
-                    <div className="mt-2 grid grid-cols-2 gap-2">
-                      {formData.images.map((url, index) => (
-                        <div key={url} className="relative aspect-square">
-                          <Image
-                            src={url}
-                            alt={`Present image ${index + 1}`}
-                            fill
-                            className="rounded-lg object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 z-10"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-2">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        disabled={uploading}
-                        className="block w-full text-sm text-gray-500
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-full file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100"
-                      />
-                      {uploading && (
-                        <div className="mt-2 text-sm text-gray-500">
-                          Uploading...
-                        </div>
-                      )}
-                    </div>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 font-medium mb-2">Image URL</label>
+                    <input
+                      type="text"
+                      className="border rounded px-3 py-2 w-full"
+                      placeholder="https://example.com/image.jpg"
+                      value={formData.image}
+                      onChange={e => setFormData({ ...formData, image: e.target.value })}
+                      required
+                    />
                   </div>
                   <div className="flex justify-end gap-2">
                     <button

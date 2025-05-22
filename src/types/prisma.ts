@@ -4,7 +4,7 @@ export interface Present {
   name: string
   description: string
   price: number
-  images: string[]
+  image: string
   isReserved: boolean
   createdAt: Date
   updatedAt: Date
