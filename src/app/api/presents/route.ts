@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         name,
         description,
         price,
-        images,
+        images: Array.isArray(images) ? JSON.stringify(images) : images,
         isReserved: false
       }
     })
