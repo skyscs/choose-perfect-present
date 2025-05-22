@@ -42,7 +42,7 @@ export default function RootLayout({
                   />
                 </div>
                 <span className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                  Choose Proper Present
+                  Choose Proper Present For Me
                 </span>
               </Link>
             </div>
