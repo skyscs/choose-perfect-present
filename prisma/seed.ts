@@ -99,7 +99,10 @@ async function main() {
   // Create new presents
   for (const present of presents) {
     const createdPresent = await prisma.present.create({
-      data: present
+      data: {
+        ...present,
+        images: JSON.stringify(present.images)
+      }
     })
     console.log(`Created present: ${createdPresent.name}`)
   }
