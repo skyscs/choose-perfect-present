@@ -26,7 +26,7 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold mb-4 text-gray-900">Find Your Perfect Gift</h1>
+                    <h1 className="text-4xl font-bold mb-4 text-gray-900">Find Your Perfect Gift For Me</h1>
                     <p className="text-lg text-gray-600">
                       Browse through my wishlist and discover the ideal present that matches your budget. 
                       Once you've found something special, just reach out to me for a secret code to reserve it.

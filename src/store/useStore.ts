@@ -4,6 +4,7 @@ import type { Present } from '@/types/prisma'
 interface Filters {
   minPrice: number
   maxPrice: number
+  sortOrder: 'asc' | 'desc'
 }
 
 interface Store {
@@ -19,6 +20,7 @@ export const useStore = create<Store>((set, get) => ({
   filters: {
     minPrice: 0,
     maxPrice: 30000,
+    sortOrder: 'asc',
   },
   setPresents: (presents: Present[]) => set({ presents }),
   setFilters: (filters: Partial<Filters>) => 

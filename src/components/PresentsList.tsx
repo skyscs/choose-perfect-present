@@ -60,9 +60,15 @@ export function PresentsList({ className = '' }: PresentsListProps) {
 
   const filtered = React.useMemo(() => {
     if (!presents) return []
-    return presents.filter((present) => 
+    let result = presents.filter((present) => 
       present.price >= filters.minPrice && present.price <= filters.maxPrice
     )
+    if (filters.sortOrder === 'desc') {
+      result = [...result].sort((a, b) => b.price - a.price)
+    } else {
+      result = [...result].sort((a, b) => a.price - b.price)
+    }
+    return result
   }, [presents, filters])
 
   if (isError) {

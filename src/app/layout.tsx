@@ -4,6 +4,7 @@ import { Providers } from '@/components/Providers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CurrencyProvider, useCurrency, CurrencySelector } from '@/components/CurrencyProvider'
+import { Footer } from '@/components/Footer'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
           <main>
             <Providers>{children}</Providers>
           </main>
+          <Footer />
         </CurrencyProvider>
       </body>
     </html>

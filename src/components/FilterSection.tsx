@@ -2,25 +2,48 @@
 
 import React from 'react'
 import { useStore } from '@/store/useStore'
-import * as Slider from '@radix-ui/react-slider'
 import { useCurrency } from './CurrencyProvider'
 
 interface FilterSectionProps {
   className?: string
 }
 
+type SortOrder = 'asc' | 'desc';
+
+type PriceRange = {
+  label: string;
+  minPrice: number;
+  maxPrice: number;
+};
+
+const PRICE_RANGES: PriceRange[] = [
+  { label: 'All', minPrice: 0, maxPrice: Infinity },
+  { label: 'Budget', minPrice: 0, maxPrice: 200 },
+  { label: 'Standard', minPrice: 200, maxPrice: 2000 },
+  { label: 'Luxury', minPrice: 2000, maxPrice: Infinity }
+];
+
 export function FilterSection({ className = '' }: FilterSectionProps) {
   const { filters, setFilters } = useStore()
-  const [priceRange, setPriceRange] = React.useState([filters.minPrice, filters.maxPrice])
   const { currency, rates } = useCurrency()
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>('asc');
 
-  const handlePriceChange = React.useCallback(
-    (values: number[]) => {
-      setPriceRange(values)
-      setFilters({ minPrice: values[0], maxPrice: values[1] })
-    },
-    [setFilters]
-  )
+  // Set default filter to 'All' on component mount
+  React.useEffect(() => {
+    if (filters.minPrice === 0 && filters.maxPrice === 30000) {
+      handlePriceRangeSelect(PRICE_RANGES[0]);
+    }
+  }, []);
+
+  const handlePriceRangeSelect = (range: PriceRange) => {
+    setFilters({ minPrice: range.minPrice, maxPrice: range.maxPrice })
+  }
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as SortOrder;
+    setSortOrder(value);
+    setFilters({ ...filters, sortOrder: value });
+  };
 
   const convert = (usd: number) => Math.round((usd / rates['USD']) * rates[currency])
 
@@ -35,44 +58,35 @@ export function FilterSection({ className = '' }: FilterSectionProps) {
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-4">
-            Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+            Price Range
           </label>
-          <form className="px-1">
-            <Slider.Root
-              className="relative flex items-center select-none touch-none w-full h-5"
-              value={priceRange}
-              onValueChange={handlePriceChange}
-              min={0}
-              max={30000}
-              step={100}
-              minStepsBetweenThumbs={1}
-            >
-              <Slider.Track className="bg-gray-200 relative grow rounded-full h-2">
-                <Slider.Range className="absolute bg-blue-500 rounded-full h-full" />
-              </Slider.Track>
-              <Slider.Thumb
-                className="block w-5 h-5 bg-white border border-gray-300 shadow-md rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-label="Minimum price"
-              />
-              <Slider.Thumb
-                className="block w-5 h-5 bg-white border border-gray-300 shadow-md rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-label="Maximum price"
-              />
-            </Slider.Root>
-          </form>
-          <div className="flex justify-between text-xs text-gray-500 mt-2">
-            <span>{formatPrice(0)}</span>
-            <span>{formatPrice(30000)}</span>
+          <div className="flex gap-2">
+            {PRICE_RANGES.map((range) => (
+              <button
+                key={range.label}
+                className={`px-3 py-1 rounded font-semibold border ${
+                  filters.minPrice === range.minPrice && filters.maxPrice === range.maxPrice
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-900 border-gray-300 hover:bg-blue-50'
+                }`}
+                onClick={() => handlePriceRangeSelect(range)}
+              >
+                {range.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-200">
-          <button
-            onClick={() => handlePriceChange([0, 30000])}
-            className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Sort by Price</label>
+          <select
+            className="w-full border rounded px-3 py-2 text-gray-900 bg-white"
+            value={sortOrder}
+            onChange={handleSortChange}
           >
-            Reset Filters
-          </button>
+            <option value="asc">Price: Low to High</option>
+            <option value="desc">Price: High to Low</option>
+          </select>
         </div>
       </div>
     </div>
