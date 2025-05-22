@@ -97,6 +97,7 @@ export default function PresentDetails({ id }: PresentDetailsProps) {
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 600px"
                 priority
+                unoptimized
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   img.src = '/images/placeholder.webp';
