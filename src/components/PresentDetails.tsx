@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Present } from '@/types/prisma'
 import { ReservationModal } from './ReservationModal'
+import { useCurrency } from './CurrencyProvider'
 
 interface PresentDetailsProps {
   id: string
@@ -17,6 +18,7 @@ export default function PresentDetails({ id }: PresentDetailsProps) {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [error, setError] = React.useState<string>()
+  const { currency, rates } = useCurrency()
   
   const { data: present, isLoading: isPresentLoading } = useQuery<Present>({
     queryKey: ['present', id],
@@ -107,7 +109,9 @@ export default function PresentDetails({ id }: PresentDetailsProps) {
             <div className="flex-1 p-6 md:p-8 flex flex-col">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{present.name}</h1>
-                <p className="text-xl text-gray-800 font-medium mb-4">${present.price.toLocaleString()}</p>
+                <p className="text-xl text-gray-800 font-medium mb-4">
+                  {currency} {Math.round((present.price / rates['USD']) * rates[currency])}
+                </p>
                 <p className="text-gray-700 mb-8">{present.description}</p>
               </div>
               <div className="mt-auto">

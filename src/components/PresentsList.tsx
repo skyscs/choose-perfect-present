@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Present } from '@/types/prisma'
+import { useCurrency } from './CurrencyProvider'
 
 interface PresentsListProps {
   className?: string
@@ -41,6 +42,7 @@ async function fetchPresents(): Promise<Present[]> {
 
 export function PresentsList({ className = '' }: PresentsListProps) {
   const { filters, setPresents } = useStore()
+  const { currency, rates } = useCurrency()
 
   const query = useQuery<Present[], Error>({
     queryKey: ['presents'],
@@ -62,8 +64,6 @@ export function PresentsList({ className = '' }: PresentsListProps) {
       present.price >= filters.minPrice && present.price <= filters.maxPrice
     )
   }, [presents, filters])
-
-  console.log('Render state:', { isLoading, isError, error, presentsCount: presents?.length, filteredCount: filtered.length })
 
   if (isError) {
     return (
@@ -126,7 +126,9 @@ export function PresentsList({ className = '' }: PresentsListProps) {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{present.name}</h3>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">{present.description}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-blue-600 font-semibold">${present.price.toFixed(2)}</span>
+                  <span className="text-blue-600 font-semibold">
+                    {currency} {Math.round((present.price / rates['USD']) * rates[currency])}
+                  </span>
                   <span className={`px-2 py-1 rounded text-sm ${present.isReserved ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>{present.isReserved ? 'Reserved' : 'Available'}</span>
                 </div>
               </div>

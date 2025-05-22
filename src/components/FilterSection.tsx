@@ -3,6 +3,7 @@
 import React from 'react'
 import { useStore } from '@/store/useStore'
 import * as Slider from '@radix-ui/react-slider'
+import { useCurrency } from './CurrencyProvider'
 
 interface FilterSectionProps {
   className?: string
@@ -11,6 +12,7 @@ interface FilterSectionProps {
 export function FilterSection({ className = '' }: FilterSectionProps) {
   const { filters, setFilters } = useStore()
   const [priceRange, setPriceRange] = React.useState([filters.minPrice, filters.maxPrice])
+  const { currency, rates } = useCurrency()
 
   const handlePriceChange = React.useCallback(
     (values: number[]) => {
@@ -20,13 +22,10 @@ export function FilterSection({ className = '' }: FilterSectionProps) {
     [setFilters]
   )
 
+  const convert = (usd: number) => Math.round((usd / rates['USD']) * rates[currency])
+
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
+    return `${currency} ${convert(price)}`
   }
 
   return (
